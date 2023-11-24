@@ -1,10 +1,12 @@
     package com.patil.entity;
 
 
+    import com.fasterxml.jackson.annotation.JsonManagedReference;
     import com.patil.testEnum.CloverEnum;
     import jakarta.persistence.*;
     import org.hibernate.annotations.DynamicUpdate;
 
+    import java.beans.Transient;
     import java.sql.Connection;
     import java.sql.PreparedStatement;
     import java.sql.ResultSet;
@@ -13,6 +15,7 @@
     import static com.patil.testEnum.CloverEnum.CI;
 
     @Entity
+    @Table(name="employee")
     public class Employee{
 
         //private static final AtomicInteger counter = new AtomicInteger(10000);
@@ -27,32 +30,23 @@
         private Long empSalary;
         private Long empContact;
 
+        @JsonManagedReference
+        @OneToOne(mappedBy = "employee",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+        private  EmployeeLogin employeeLogin;
+
         public Employee() {
         }
 
-//        @PrePersist
-//        public void prePersist() {
-//            // This method is called before the entity is persisted to the database
-//            // Concatenate "CI enum" with the auto-generated ID
-//            this.empId = CI.name()+this.id;
-//        }
 
-//        public static Long getNextId(EntityManager entityManager) throws SQLException {
-//            try (Connection connection = entityManager.unwrap(Connection.class)) {
-//                // Use a native SQL query to get the last generated auto-increment value
-//                String sql = "SELECT LAST_INSERT_ID()";
-//                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-//                    try (ResultSet resultSet = statement.executeQuery()) {
-//                        if (resultSet.next()) {
-//                            return resultSet.getLong(1);
-//                        } else {
-//                            throw new SQLException("Unable to retrieve last insert ID");
-//                        }
-//                    }
-//                }
-//            }
+        public EmployeeLogin getEmployeeLogin() {
+            return employeeLogin;
+        }
 
-        public Employee(int id, String empId, String empName, String empDept, String empCast, Long empSalary, Long empContact) {
+        public void setEmployeeLogin(EmployeeLogin employeeLogin) {
+            this.employeeLogin = employeeLogin;
+        }
+
+        public Employee(int id, String empId, String empName, String empDept, String empCast, Long empSalary, Long empContact, EmployeeLogin employeeLogin) {
             this.id = id;
             this.empId = empId;
             this.empName = empName;
@@ -60,6 +54,7 @@
             this.empCast = empCast;
             this.empSalary = empSalary;
             this.empContact = empContact;
+            this.employeeLogin = employeeLogin;
         }
 
         public int getId() {

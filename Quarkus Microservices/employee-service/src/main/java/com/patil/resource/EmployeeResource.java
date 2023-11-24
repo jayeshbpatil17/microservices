@@ -1,6 +1,8 @@
 package com.patil.resource;
 
 import com.patil.entity.Employee;
+import com.patil.entity.EmployeeLogin;
+import com.patil.entity.EmployeeLoginRepo;
 import com.patil.entity.EmployeeRepo;
 import com.patil.testEnum.CloverEnum;
 import jakarta.inject.Inject;
@@ -24,7 +26,11 @@ public class EmployeeResource {
     EmployeeRepo employeeRepo;
 
     @Inject
+    EmployeeLoginRepo employeeLoginRepo;
+
+    @Inject
     EntityManager entityManager;
+
 
     @GET
     public Response getAllEmployees() {
@@ -40,16 +46,40 @@ public class EmployeeResource {
         return Response.ok(employee).build();
     }
 
-    @Transactional
+
     @POST
+    @Transactional
     public Response createEmployee(Employee employee) {
         //Long lastInsertId = ((Long) entityManager.createNativeQuery("SELECT LAST_INSERT_ID()").getSingleResult())+1;
+        //int lastInsertId = 1;
         int lastInsertId = ((int) entityManager.createNativeQuery("SELECT e.id FROM quarkus.employee e order by e.id desc limit 1").getSingleResult())+1;
-
         System.out.println("inside create employee"+lastInsertId);
         employee.setEmpId(CloverEnum.CI.name()+String.format("%05d", lastInsertId));
 
+//        EmployeeLogin el = new EmployeeLogin();
+//        el.setEmployee(employee);
+//        //el.setUserId(employee.getId()); // not using
+//        employee.setEmployeeLogin(el);
+//        employeeRepo.persist(employee);
+//        //employeeLoginRepo.persist(el); //not using
+
+        EmployeeLogin el =employee.getEmployeeLogin();
+        el.setEmployee(employee);
+        //el.setUserId(employee.getId()); // not using
+        employee.setEmployeeLogin(el);
         employeeRepo.persist(employee);
+        //employeeLoginRepo.persist(el); //not using
+
+
+//        employee.setEmployeeLogin(el);
+//        employeeRepo.persist(employee);
+//        el.setUserId(employee.getId()); // Set the userId based on the corresponding employee id
+//        el.setEmployee(employee);
+//
+//// Persist the entities
+//        employeeLoginRepo.persist(el);
+
+
         if(employeeRepo.isPersistent(employee)){
             return Response.status(Response.Status.CREATED).build();
         }else{
@@ -107,6 +137,9 @@ public class EmployeeResource {
             if (Objects.nonNull(employee.getEmpSalary())) {
                 dbEmp.setEmpSalary(employee.getEmpSalary());
             }
+            if (Objects.nonNull(employee.getEmployeeLogin())) {
+                dbEmp.setEmployeeLogin(employee.getEmployeeLogin());
+            }
         }
             employeeRepo.persist(dbEmp);
 
@@ -144,6 +177,10 @@ public class EmployeeResource {
             if (Objects.nonNull(employee.getEmpSalary())) {
                 dbEmp.setEmpSalary(employee.getEmpSalary());
             }
+            if (Objects.nonNull(employee.getEmployeeLogin())) {
+                dbEmp.setEmployeeLogin(employee.getEmployeeLogin());
+            }
+
         }
         employeeRepo.persist(dbEmp);
 
