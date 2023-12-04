@@ -4,6 +4,7 @@ package com.patil.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name="multi_file")
 public class FileEntity {
 
     @Id

@@ -8,10 +8,13 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 @Path("/files")
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,26 +23,26 @@ public class FileController {
 
     @Inject
     FileService fileService;
+//
+//    @POST
+//    @Path("/upload")
+//    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+//    @Transactional
+//    public void uploadFile(byte[] fileContent) {
+//        FileEntity fileEntity = new FileEntity();
+//        fileEntity.setFileContent(fileContent);
+//        fileService.saveFile(fileEntity);
+//    }
+//
+//
+//    @GET
+//    @Path("/{fileId}")
+//    public FileEntity getFileById(@PathParam("fileId") Long fileId) {
+//        return fileService.getFileById(fileId);
+//    }
+//
 
-    @POST
-    @Path("/upload")
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    @Transactional
-    public void uploadFile(byte[] fileContent) {
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setFileContent(fileContent);
-        fileService.saveFile(fileEntity);
-    }
-
-
-    @GET
-    @Path("/{fileId}")
-    public FileEntity getFileById(@PathParam("fileId") Long fileId) {
-        return fileService.getFileById(fileId);
-    }
-
-
-
+//ver last changed
     @POST
     @Path("/uploadMultiple")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -59,6 +62,15 @@ public class FileController {
         }
         return Response.status(Response.Status.CREATED).build();
     }
+
+/*
+If you expect to receive large files, consider utilizing libraries like Apache Commons
+ FileUpload or MultipartStream to handle them efficiently. These libraries offer features
+ like streaming uploads and temporary storage to avoid memory limitations.
+
+
+ */
+
 
 //    @GET
 //    @Path("/download/{fileId}")
@@ -146,11 +158,11 @@ public class FileController {
 //        }
 //    }
 
-    @GET
-    @Path("/list")
-    public List<FileEntity> listFiles() {
-        return fileService.getAllFiles();
-    }
+//    @GET
+//    @Path("/list")
+//    public List<FileEntity> listFiles() {
+//        return fileService.getAllFiles();
+//    }
 
 }
 
